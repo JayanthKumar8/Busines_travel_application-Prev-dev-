@@ -1,0 +1,32 @@
+<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m" xmlns:l="sap.ui.layout"
+	xmlns:f="sap.ui.layout.form">
+    <Dialog id="req_details_Dialoga" title="Request Details" >
+        <content>
+        	<f:SimpleForm id="SimpleFormDisplay354s" editable="false" layout="ResponsiveGridLayout"		 labelSpanXL="3" labelSpanL="3" labelSpanM="3" labelSpanS="12" adjustLabelSpan="false" emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1" singleContainerFullSize="false" >
+			<f:content>
+				   <Label id="travelRequestId_IDenLable" text="Travel Request ID"/>
+					<Input id="travelRequestId_IDenInput1" value="{travelRequestId}" editable="false"/>
+
+					<Label id="requestType_IDenLabel2" text="Travel Request Type"/>
+					<Input id="requestType_IGenInput1" value="{requestType}" editable="false"/>
+
+					<Label id="requestType" text="Requested Date"/>
+					<Input id="_IDenInput" value="{createdAt}" editable="false"/>
+
+					 <Label id="status_IDGeLabel2" text="Request Status"/>
+					<Input id="status_IDGnInput1" value="{status}" editable="false"/>
+			</f:content>
+		</f:SimpleForm>
+        
+        </content>
+        <endButton>
+              <Button
+                    id="closeDb"
+                    press="handleCloseDailog"
+                    text="Close"
+                    type="Emphasized"
+                />
+        </endButton>
+
+    </Dialog>
+</core:FragmentDefinition>

@@ -1,0 +1,387 @@
+<mvc:View xmlns:mvc="sap.ui.core.mvc"
+	xmlns="sap.uxap"
+	xmlns:layout="sap.ui.layout"
+	xmlns:f="sap.ui.layout.form"
+	xmlns:core="sap.ui.core"
+	xmlns:m="sap.m"
+	xmlns:upload="sap.m.upload"
+    xmlns:plugins="sap.m.plugins.UploadSetwithTable"  
+	controllerName="travelapp.businesstravelapplicationfiori.controller.travelrequest"
+	height="100%">
+	<m:Page id="travelrequestPage" title="{i18n>travelrequestPage.title}" showNavButton="true"
+		navButtonPress=".onNavBack">
+		    <!-- <m:Toolbar id="_Header2" class="sticky-toolbar">
+
+				<m:ToolbarSpacer id="cr_ToolbarSpacer" />
+					<m:Title id="cr_IText" text="Create New Request"/>
+				<m:ToolbarSpacer id="cr_ToolbarSpacer1" />
+   			 </m:Toolbar> -->
+
+	<ObjectPageLayout id="travelrequest" enableLazyLoading="true" upperCaseAnchorBar="false" showFooter="true">
+		<headerTitle>
+			<ObjectPageDynamicHeaderTitle id="_ObjectPageDynamicHeaderTitle" backgroundDesign="Solid">
+
+				<expandedHeading>
+					<m:Title id="_IDGenTitle" text="{EmployeeJsonModel>/EmployeeData/0/defaultFullName}" wrapping="true"/>
+				</expandedHeading>
+
+				<snappedHeading>
+					<m:FlexBox id="_IDGenFlexBox" fitContainer="true" alignItems="Center">
+						<m:Avatar id="_IDGenAvatar"  class="sapUiTinyMarginEnd"/>
+						<m:Title id="_IDGenTitle2" text="{EmployeeJsonModel>/EmployeeData/0/defaultFullName}" wrapping="true"/>
+					</m:FlexBox>
+				</snappedHeading>
+
+				<snappedContent>
+					<m:Text id="_IDGenText9" text="{EmployeeJsonModel>/EmployeeData/0/title}"/>
+				</snappedContent>
+
+				<expandedContent>
+					<m:Text id="_IDGenText10" text="{EmployeeJsonModel>/EmployeeData/0/title}"/>
+				</expandedContent>
+
+				<!-- <snappedTitleOnMobile>
+					<m:Title id="_IDGenTitle3" text="Senior UI Developer"/>
+				</snappedTitleOnMobile> -->
+
+			</ObjectPageDynamicHeaderTitle>
+		</headerTitle>
+
+		
+
+		<sections>
+			
+			<ObjectPageSection titleUppercase="false" id="empInfo" title="{i18n>empInfo.title}">
+				<subSections>
+					<ObjectPageSubSection id="_IDGenObjectPageSubSectin6" titleUppercase="false">
+						<f:SimpleForm id="EmpInfo" editable="true" title="" layout="ColumnLayout" columnsM="2" columnsL="3" columnsXL="4">
+							<f:content>
+						<core:Title id="Official_Title_1" text="Official Details" />   
+							<!-- Employee Id -->
+							<m:Label id="empidLbl" text="{i18n>empId.label}" />
+							<m:Text id="emp_Id" text="{EmployeeJsonModel>/EmployeeData/0/empId}" />
+							
+							<!-- Employee Name -->
+							<m:Label id="empNameLabl" text="{i18n>empEmail.label}" />
+							<m:Text id="empname" text="{EmployeeJsonModel>/EmployeeData/0/email}" />
+
+							<!-- Employee Designation -->
+							<m:Label id="empLabel_2" text="{i18n>empDesignation.label}" />
+							<m:Text id="empIp_2" text="{EmployeeJsonModel>/EmployeeData/0/custom10}"/>
+							
+							<!-- Employee Department -->
+							<m:Label id="empLabel_3" text="{i18n>empDepartment.label}" />
+							<m:Text id="empIpD_3" text="{EmployeeJsonModel>/EmployeeData/0/department}"/>
+
+								<!-- Employee Department -->
+							<m:Label id="empLabel_" text="{i18n>empDivision.label}" />
+							<m:Text id="emppD_3" text="{EmployeeJsonModel>/EmployeeData/0/division}"/>
+							
+						<core:Title id="Personal" text="Personal Information" />   
+
+							<m:Label  id="empDLabel_3" text="{i18n>empAddress.label}" />
+							<m:Text id="empIp_3" text="{EmployeeJsonModel>/EmployeeData/0/location}" />
+
+							<m:Label  id="empcountry_" text="{i18n>empCountry.label}" />
+							<m:Text id="empcountry" text="{EmployeeJsonModel>/EmployeeData/0/nationality}" />
+
+							<m:Label  id="emp_phone_" text="{i18n>empPhone.label}" />
+							<m:Text id="empphone" text="{EmployeeJsonModel>/EmployeeData/0/cellPhone}" />
+							
+						<!-- <core:Title id="Experience" text="Experience and Grades" />   
+
+							<m:Label id="empGradesLabel_4" text="Grades" />
+							<m:RatingIndicator id="empGradesindic" value="{Rating}" displayOnly="true" />
+							
+							<m:Label id="empExperienceLabel_5" text="Experience" />
+							<m:ProgressIndicator id="empExperience_1" percentValue="{Disposable}" displayOnly="true" /> -->
+
+							</f:content>
+						</f:SimpleForm>
+					</ObjectPageSubSection>
+				</subSections>
+			</ObjectPageSection>
+
+										<!-- TRIP HEADER FORM SECTION STARTS-->
+			<ObjectPageSection titleUppercase="false" id="TripHeader" title="{i18n>TripHeader.title}">
+				<subSections>
+					<ObjectPageSubSection id="tripItems" titleUppercase="false">
+						<f:SimpleForm id="tripHeaderForm" editable="true" title="" layout="ColumnLayout" columnsM="2" columnsL="3" columnsXL="4">
+							<f:content>
+								  <m:Label id="travel_typelable" text="{i18n>travelType.label}" labelFor="travel_type_Id_CB"/>
+									<m:ComboBox id="travel_typeId_CB" selectedKey="tripTypeModel>/tripData/0/TripType"
+										items="{ 
+												path: 'tripTypeModel>/tripData/0/TripTypeOptions',
+												sorter: {path: 'text'}                            
+										}" change="handlechange" placeholder="{i18n>travelType.placeholder}" required="true">
+										<core:Item id="travel_typeId_CBItem" text="{tripTypeModel>text}" key="{tripTypeModel>key}"></core:Item>
+									</m:ComboBox>
+
+								<m:Label id="_IDGenLabel9" text="{i18n>totalPerDeim.label}"/>
+								<m:Input id="_IDGenInput7" type="Number" value="500" editable="false" required="true"/>
+							</f:content>
+						</f:SimpleForm>
+					</ObjectPageSubSection>
+				</subSections>
+			</ObjectPageSection>
+											<!-- TRIP HEADER FORM SECTION ENDS-->
+
+
+			<ObjectPageSection titleUppercase="false" id="TripItems" title="{i18n>TripItems.title}">
+				<subSections>
+					<ObjectPageSubSection id="_IDGenObjectPageSubSection61" titleUppercase="false">
+						<f:SimpleForm id="tripItemForm" editable="true" layout="ColumnLayout" labelSpanXL="3" labelSpanL="3" labelSpanM="3" columnsXL="3" columnsL="3" columnsM="2"  adjustLabelSpan="false">
+							<f:content>
+							<core:Title id="departure_Section" text="{i18n>departure.title}" />
+							                          
+													<!-- From Date -->
+								<m:Label id="FromdatePicker_Lbl" text="{i18n>fromDate.label}" labelFor="From_datePicker" />
+									<m:DatePicker id="FromDate_Id" placeholder="{i18n>fromDate.placeholder}" 
+									change="handlechange" class="sapUiSmallMarginBottom" required="true">
+								</m:DatePicker>
+								
+
+								 					<!-- From Country -->
+								<m:Label id="fromCountry_Labl" text="{i18n>fromCountry.label}"/>
+								<m:ComboBox id="From_Country" selectedKey="{CountriesJSONModel>text}" 
+									items="{
+										path: 'CountriesJSONModel>/CountriesCollection',
+										sorter: { path: 'text' },
+										templateShareable: true
+									}" placeholder="Select here.." required="true">
+									<core:Item id="From_countryItm" key="{CountriesJSONModel>key}" text="{CountriesJSONModel>text}" />
+								</m:ComboBox>
+                	
+
+											<!-- From City -->
+								<m:Label id="FromCity_Labl" text="{i18n>fromCity.label}"/>
+								<m:Input id="FromCity" type="Text" placeholder="Enter city..." liveChange="handlechange" required="true"/>
+
+
+							<core:Title id="Visa_Section" text=" Visa and Transport" />
+
+
+								   				<!-- Visa Required Drop Down Field -->
+								<m:Label id="Visa_req_labl" text="{i18n>visaRequired.label}" labelFor="Visa_req_Id_CB"/>
+								<m:ComboBox id="VisaRequired"  selectedKey="{tripItemJsonModel>/tripItem/1/VisaRequired}"
+									items="{ 
+											path: 'tripItemJsonModel>/tripItem/1/VisaRequiredOptions',
+											sorter: {path: 'text'},
+											templateShareable:true
+									}" change="handlechange" placeholder="Select here.." required="true">
+									<core:Item id="Visa_req_Id_" text="{tripItemJsonModel>text}" key="{tripItemJsonModel>key}"></core:Item>
+								</m:ComboBox> 
+
+
+								                    <!-- Flight Required Drop Down Field -->
+								<m:Label id="flight_req_labl" text="{i18n>flightRequired.label}" labelFor="flightRequired"/>
+								<m:ComboBox id="flightRequired" selectedKey="{tripItemJsonModel>/tripItem/0/TransportRequired}" 
+									items="{ 
+											path: 'tripItemJsonModel>/tripItem/0/TransportRequiredOptions',
+											sorter: {path: 'text'},
+											templateShareable:true
+									}" change="handlechange" placeholder="Select here.."  required="true">
+									<core:Item id="flight_req_Id_" text="{tripItemJsonModel>text}" key="{tripItemJsonModel>key}"></core:Item>
+								</m:ComboBox>
+
+								 							 <!-- Per Deim Field  -->
+								<m:Label id="perDeim_labl" text="{i18n>perDeim.label}"/>
+								<m:Input id="perDeim_ip" type="Number"  liveChange="handlechange" required="true" />
+
+							
+							<core:Title id="TripItems_coreTitle_3" text="{i18n>destination.title}" />
+
+									<!-- To Date -->
+									<m:Label id="TodatePicker_Labl" text="{i18n>toDate.label}"/>
+									<m:DatePicker id="ToDate_Id" placeholder="{i18n>toDate.placeholder}" 
+											change="handlechange" class="sapUiSmallMarginBottom" required="true" >
+									</m:DatePicker>
+
+								
+									<!-- To Country -->
+									<m:Label id="toCountry_Label" text="{i18n>toCountry.label}"/>
+									<m:ComboBox id="To_country" selectedKey="{CountriesJSONModel>text}" 
+										items="{
+											path: 'CountriesJSONModel>/CountriesCollection',
+											sorter: { path: 'text' },
+											templateShareable: true
+										}" placeholder="Select here.."  required="true">
+										<core:Item id="to_countryItem" key="{CountriesJSONModel>key}" text="{CountriesJSONModel>text}" />
+									</m:ComboBox>
+									
+									<!-- To City -->
+									<m:Label id="toCity_Label" text="{i18n>toCity.label}"/>
+									<m:Input id="ToCity" type="Text" placeholder="Enter city..." liveChange="handlechange" required="true"/>
+									
+								<core:Title id="Comment" text="{i18n>comments.label}" />
+									<m:TextArea id="comments" cols="1"  width="100%" placeholder="{i18n>comments.placeholder}" />
+
+							</f:content>
+						</f:SimpleForm>
+					</ObjectPageSubSection>
+
+				</subSections>
+			</ObjectPageSection>
+
+												<!-- ATTACHMENTS SECTION STARTS-->
+		<ObjectPageSection id="attachments" titleUppercase="false" title="{i18n>attachments.title}">
+                <subSections>
+                    <ObjectPageSubSection id="attachment_SubSection">
+							<m:Table
+							id="table-uploadSet"
+							sticky="ColumnHeaders,HeaderToolbar"
+							width="auto"
+							mode="MultiSelect"
+							fixedLayout="false"
+							inset="true"
+							autoPopinMode="true"
+							hiddenInPopin="None"
+							items="{
+							  path: 'fileMetadata>/files',
+							 templateShareable: false
+							  }"
+							 selectionChange="onSelectionChange">
+
+							<m:headerToolbar>
+								<m:OverflowToolbar id="_IDGenOverflowToolbar2">
+									<!-- <m:Title id="_attachment_Count"
+										text="Documents ({= ${Attachments}.length})"
+										level="H2"
+									/> -->
+									<m:ToolbarSpacer id="_IDGenToolbarSpacer3" />
+
+									<m:SearchField id="_IDGenSearchField"
+										width="20%"
+										liveChange="onSearch"
+									>
+										<m:layoutData>
+											<m:OverflowToolbarLayoutData id="_IDGenOverflowToolbarLayoutData"
+												priority="NeverOverflow"
+											/>
+										</m:layoutData>
+									</m:SearchField>
+									<m:ToolbarSeparator id="_IDGenToolbarSeparator" />
+
+									<!-- Use the UploadButtonPlaceholder to add the UploadButton to the toolbar -->
+									<upload:ActionsPlaceholder id="uploadButton" placeholderFor="UploadButtonPlaceholder"  />
+
+									<!-- <m:Button
+										id="downloadSelectedButton"
+										text="Download"
+										enabled="false"
+										press="onDownloadPress"
+									/> -->
+								</m:OverflowToolbar>
+							</m:headerToolbar>
+							<!-- uploadUrl="/odata/v2/travel/Attachments/content" -->
+							<m:dependents>
+								<m:plugins.UploadSetwithTable
+									id="uploadSetPlugin"
+									multiple="false"
+									beforeInitiatingItemUpload="onBeforeUploadStarts"
+									itemRenamed="onDocumentRenamedSuccess"
+									uploadCompleted="onUploadCompleted"
+									onActivated="onPluginActivated"		
+									actions="uploadButton">
+									<m:rowConfiguration>
+										<m:upload.UploadItemConfiguration
+											fileNamePath="fileName"
+											mediaTypePath="mediaType"
+											urlPath="url"
+											previewablePath="url"
+											fileSizePath="fileSize"
+											isTrustedSourcePath="trustedSource"
+										/>
+									</m:rowConfiguration>
+								</m:plugins.UploadSetwithTable>
+							</m:dependents>
+
+							<m:columns>
+								<m:Column id="fileName" importance="High">
+									<m:header>
+										<m:Label id="_IDGenLabel" text="File Name" />
+									</m:header>
+								</m:Column> 
+								<!-- <m:Column id="id">
+									<m:header>
+										<m:Label id="_IDGenLabel1" text="ID" />
+									</m:header>
+								</m:Column> -->
+								<m:Column id="filetype">
+									<m:header>
+										<m:Label id="_IDGenLabel3" text="File Type" />
+									</m:header>
+								</m:Column>
+								<m:Column id="fileSize">
+									<m:header>
+										<m:Label id="_IDGenLabel4" text="File Size" />
+									</m:header>
+								</m:Column>	
+								<m:Column id="remove">
+									<m:header>
+										<m:Label id="_remove3" text="Remove" />
+									</m:header>
+								</m:Column>		
+								<m:Column id="actionButton" importance="High" />
+							</m:columns>
+								
+							<m:items>
+								<m:ColumnListItem id="_IDGenColumnListItem"
+									press="onItemPress"
+									highlight="{= ${url} === 'Complete' ? 'Indication05' : null }"
+								>
+				
+								<!-- Cells with cell template defining content for each column (cells and columns work with 1:1 mapping) -->
+									 <m:cells>
+									 <m:HBox id="_IDGenHBox">
+											<!-- <m:Image id="_IDGenImage"
+												src="{}"
+												class="sapMUSTItemImage sapMUSTItemIcon"
+												visible="{= ${} !== undefined}"
+											/> -->
+											<m:VBox id="_IDGenVBox"
+												class="sapUiTinyMargin sapUiSmallMarginBegin"
+											>
+												<m:Link id="_IDGenLink"
+													text="{fileMetadata>fileName}"
+													press="openPreview"
+													class="sapUiTinyMarginBottom"
+												/>
+												<m:Text id="_IDGenText1" text="invoice" />
+											</m:VBox>
+										</m:HBox> 
+										<!-- <m:Text id="_IfileName" text="{ID}" /> -->
+										<m:Text id="_IDGenLink1" text="{fileMetadata>mediaType}" />
+										<m:Text id="_IDGenText3" text="{fileMetadata>size}" />
+							
+										<m:Button id="_IDGenButton1"
+											class="sapUiTinyMarginBegin"
+											type="Transparent"
+											icon="sap-icon://decline"
+											press="onRemoveHandler"
+										/>
+									</m:cells>
+								</m:ColumnListItem>
+							</m:items>
+						</m:Table>                                    
+                    </ObjectPageSubSection>
+                </subSections>
+            </ObjectPageSection>
+		</sections>									
+
+
+								<!-- FOOTER -->
+				<footer>
+					<m:OverflowToolbar id="_IDGenOverflowToolbar3">
+						<m:ToolbarSpacer id="_IDGenToolbarSpacer4"/>
+						<m:Button id="addCityBtn" press=".onAddCity" text="{i18n>addCityButton.text}" type="Attention" />
+						<m:Button id="_IDGenButton6" press=".onResetAllForms" type="Accept" text="{i18n>resetButton.text}"/>
+						<m:Button id="_IDGenButton7" press=".onCancelRequest" type="Reject" text="{i18n>cancelButton.text}"/>
+							<m:Button id="Submit" press="onSubmit" text="{i18n>submitButton.text}" type="Emphasized" />
+					</m:OverflowToolbar>
+				</footer>
+				
+			</ObjectPageLayout>
+
+	</m:Page>
+</mvc:View>

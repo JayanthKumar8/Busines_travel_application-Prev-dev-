@@ -1,0 +1,35 @@
+{
+  "authenticationMethod": "route",
+  "welcomeFile" : "index.html",
+  "routes": [
+    {
+      "source":"^/app/(.*)$",
+      "localDir": ".",
+      "cacheControl": "no-cache, no-store, must-revalidate",
+      "authenticationType": "none"
+    },
+    {
+      "source": "^/odata/(.*)$",
+      "target": "/odata/$1",
+      "destination": "srv-api",
+      "authenticationType": "none",
+      "csrfProtection": false
+    },
+    {
+      "source": "^/appconfig/",
+      "localDir": ".",
+      "cacheControl": "no-cache, no-store, must-revalidate"
+    },
+    {
+      "source": "^/user-api(.*)",
+      "target": "$1",
+      "service": "sap-approuter-userapi"
+    },
+    {
+      "source": "^/api/(.*)$",
+      "target": "$1",
+      "destination": "srv-api",
+      "csrfProtection": true
+    }
+  ]
+}

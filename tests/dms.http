@@ -1,0 +1,4 @@
+### GET Access Token
+# @name requestAccessToken
+POST {{"https://btp-apps-test.authentication.in30.hana.ondemand.com"}}/oauth/{{$aadToken}}
+Authorization: Basic{{""}}

@@ -1,0 +1,226 @@
+_schema-version: 3.3.0
+ID: Busines_travel_application
+version: 1.0.0
+description: "A simple CAP project."
+parameters:
+  enable-parallel-deployments: true
+  deploy_mode: html5-repo
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm ci
+        - npx cds build --production
+modules:
+
+  - name: Busines_travel_application-srv
+    type: nodejs
+    path: gen/srv
+    parameters:
+      buildpack: nodejs_buildpack
+      readiness-health-check-http-endpoint: /health
+      readiness-health-check-type: http
+    build-parameters:
+      builder: npm-ci
+    provides:
+      - name: srv-api # required by consumers of CAP services (e.g. approuter)
+        properties:
+          srv-url: ${default-url}
+    requires:
+      - name: travel-app-auth
+      - name: travel-app-instance
+      - name: Business_travel_hdi_instance_Hana
+      - name: Busines_travel_application-db-deployer
+
+  - name: Busines_travel_application-db-deployer
+    type: hdb
+    path: gen/db
+    parameters:
+      buildpack: nodejs_buildpack
+    requires:
+      - name: Business_travel_hdi_instance_Hana
+
+  - name: Busines_travel_application
+    type: approuter.nodejs
+    path: app/router
+    parameters:
+      keep-existing-routes: true
+      disk-quota: 256M
+      memory: 256M
+    requires:
+      - name: srv-api
+        group: destinations
+        properties:
+          name: srv-api # must be used in xs-app.json
+          url: ~{srv-url}
+          forwardAuthToken: true
+      - name: travel-app-auth
+      - name: travel-app-instance
+        group: destinations
+        properties:
+          forwardAuthToken: true
+          name: ui5
+          url: https://ui5.sap.com
+      - name: HTML5_Runtime
+    provides:
+      - name: app-api
+        properties:
+          app-protocol: ${protocol}
+          app-uri: ${default-uri}
+
+  - name: Business_travel_application_fiori
+    type: com.sap.application.content
+    requires:
+      - name: travel-app-instance
+        parameters:
+          content-target: true
+      - name: HTML5_Host
+        parameters:
+          service-key:
+            name: business-travel-app-Host-key
+      - name: travel-app-auth
+        parameters:
+          service-key:
+            name: default
+    parameters:
+      content:
+        instance:
+          destinations:
+            - Name: HTML5_Host
+              ServiceInstanceName: HTML5_Host
+              ServiceKeyName: business-travel-app-Host-key
+              sap.cloud.service: Business_Travel_Application
+            - Authentication: OAuth2UserTokenExchange
+              Name: travel-app-auth
+              ServiceInstanceName: travel-app-auth
+              ServiceKeyName: default
+              sap.cloud.service: Business_Travel_Application
+          existing_destinations_policy: ignore
+    build-parameters:
+      no-source: true
+
+  - name: Busines_travel_application-app-content
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: HTML5_Host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - artifacts:
+            - travelappbusinesstravelapplicationfiori.zip
+          name: travelappbusinesstravelapplicationfiori
+          target-path: resources/
+
+  - name: businesstravelapplicationfiori
+    type: html5
+    path: app/business_travel_application_fiori
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+        - npm install
+        - npm run build:cf
+        - npm ci
+        - npm run build
+      supported-platforms:
+        []
+
+  - name: travelappbusinesstravelapplicationfiori
+    type: html5
+    path: app/business_travel_application_fiori
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+        - npm install
+        - npm run build:cf
+        - npm ci
+        - npm run build
+      supported-platforms:
+        []
+
+  - name: Busines_travel_application-app-deployer
+    type: com.sap.application.content
+    path: gen
+    requires:
+      - name: HTML5_Host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: app/
+      requires:
+        - name: travelappbusinesstravelapplicationfiori
+          artifacts:
+            - travelappbusinesstravelapplicationfiori.zip
+          target-path: app/
+
+resources:
+
+  - name: travel-app-auth
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-name: travel-app-auth
+      service-plan: application
+      path: ./xs-security.json
+      config:
+        xsappname: travelxsuaa
+        tenant-mode: dedicated
+        oauth2-configuration:
+          redirect-uris:
+             "https://*.applicationstudio.cloud.sap/**"
+
+  - name: travel-app-instance
+    type: org.cloudfoundry.managed-service
+    parameters:
+      config:
+        HTML5Runtime_enabled: true
+        init_data:
+          instance:
+            destinations:
+              - Authentication: NoAuthentication
+                Name: ui5
+                ProxyType: Internet
+                Type: HTTP
+                URL: https://ui5.sap.com
+              - Authentication: NoAuthentication
+                HTML5.DynamicDestination: true
+                HTML5.ForwardAuthToken: true
+                Name: srv-api
+                ProxyType: Internet
+                Type: HTTP
+                URL: ~{srv-api/srv-url}
+            existing_destinations_policy: update
+      service: destination
+      service-name: travel-app-instance
+      service-plan: lite
+    requires:
+      - name: srv-api
+
+  - name: Business_travel_hdi_instance_Hana
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana
+      service-plan: hdi-shared
+
+  - name: HTML5_Host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-name: HTML5_Host
+      service-plan: app-host
+
+  - name: default_process-automation-service
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: process-automation-service
+      service-plan: standard
+
+  - name: HTML5_Runtime
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-runtime

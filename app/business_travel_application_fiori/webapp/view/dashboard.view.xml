@@ -1,0 +1,85 @@
+<mvc:View controllerName="travelapp.businesstravelapplicationfiori.controller.dashboard"
+    xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" 
+    xmlns:smartTable="sap.ui.comp.smarttable" 
+    xmlns:smartFilterBar="sap.ui.comp.smartfilterbar"
+    displayBlock="false"
+    xmlns="sap.m"
+    xmlns:f="sap.f"
+    xmlns:layout="sap.ui.layout"
+	xmlns:sv="sap.ui.comp.smartvariants">
+    <Page id="page" >
+        <f:DynamicPage id="dashboard"  toggleHeaderOnTitleClick="{/titleClickable}"  showFooter="true" fitContent="true">
+    	    <f:title>
+					<f:DynamicPageTitle id="_IDGenDynamicPageTitle">
+					<f:heading>
+						   <HBox id="_IDGenHBox1" justifyContent="Center" width="100%">
+                                <ToolbarSpacer id="_IDGenToolbarSpacer1" />
+                                 <Title id="_IDGenTitle4" text="Travel Management Application" />
+                                   <ToolbarSpacer id="_IDGenToolbarSpacer12" />
+                            </HBox>
+					</f:heading>
+					<f:actions>
+						<Button id="_IDGenButton10" text="Create Request" type="Emphasized"  press="travelrequest()"/>
+					</f:actions>
+				</f:DynamicPageTitle>
+			</f:title>
+
+             	<!-- DynamicPage Header -->
+			<f:header>
+				<f:DynamicPageHeader id="_IDGenDynamicPageHeader1" pinnable="true">			
+                    <f:content>
+                        <smartFilterBar:SmartFilterBar id="idsmartFilterBar" entitySet="Travel_Requests"  useToolbar="false" persistencyKey="SmartFilter_Explored" basicSearch="true"  basicSearchFieldName="requestType" useDateRangeType="true" assignedFiltersChanged=".onAssignedFiltersChange" initialized=".onSFBinitialized"   enableBasicSearch="true">
+                           
+                            <smartFilterBar:controlConfiguration>
+                                <smartFilterBar:ControlConfiguration id="_IDGenControlConfiguration"  key="requestType"  visibleInAdvancedArea="true">
+                                    <smartFilterBar:customControl>
+                                        <MultiComboBox id="SFBcomboBox" selectionChange=".onTravelTypeChange">
+                                            <core:Item id="_Business" key="BUSINESS" text="Business"/>
+                                            <core:Item id="_Conference" key="CONFERENCE" text="Conference"/>
+                                            <core:Item id="_Training" key="TRAINING" text="Training"/>
+                                        </MultiComboBox>
+                                    </smartFilterBar:customControl>
+                                </smartFilterBar:ControlConfiguration>
+                                <smartFilterBar:ControlConfiguration id="_IDGenControlConfiguration3" key="status" visibleInAdvancedArea="true"></smartFilterBar:ControlConfiguration>
+                            </smartFilterBar:controlConfiguration>
+                    
+                            <smartFilterBar:layoutData>
+                                <FlexItemData id="_IDGenFlexItemData" shrinkFactor="0"/>
+                            </smartFilterBar:layoutData>
+
+                        </smartFilterBar:SmartFilterBar>
+
+                    </f:content>
+				</f:DynamicPageHeader>
+			</f:header>   
+             <f:content>
+                <smartTable:SmartTable id="LineItemsSmartTable" 	entitySet="Travel_Requests"   showFullScreenButton="true" showVariantManagement="true"  smartFilterId="idsmartFilterBar"
+                    tableType="ResponsiveTable"  beforeExport="onBeforeExport" useVariantManagement="true" useTablePersonalisation="true" 
+                    header="Total Requests" showRowCount="true" persistencyKey="SmartTableAnalytical_Explored"  enableAutoBinding="true" 
+                    class="sapUiResponsiveContentPadding" enableAutoColumnWidth="true"  initiallyVisibleFields="requestType,createdDate,Remarks,totalPerDeim,status" ignoredFields=""   beforeRebindTable=".onBeforRebindTable" showDetailsButton="true" detailsButtonSetting="Medium,Low" >
+                    
+                    <Table id="idResponsiveTable" growing="true" sticky="ColumnHeaders,HeaderToolbar" alternateRowColors="true" selectionChange="onClickRow"  mode="SingleSelectMaster">
+                    
+                    </Table>
+                    
+                    <!-- layout data used to make the table growing but the filter bar fixed -->
+                    <smartTable:layoutData>
+                        <FlexItemData id="smartTable_FI" growFactor="1" baseSize="0%"/>
+                    </smartTable:layoutData>
+                </smartTable:SmartTable>
+             </f:content>
+
+
+            	<!-- DynamicPage Footer -->
+			<!-- <f:footer>
+				<OverflowToolbar id="_IDGenOverflowToolbar4">
+					<ToolbarSpacer id="_IDGenToolbarSpacer"/>
+					<Button id="_IDGenButton" type="Accept" text="Accept"/>
+					<Button id="_IDGenButton8" type="Reject" text="Reject"/>
+				</OverflowToolbar>
+			</f:footer>  -->
+            	<!-- DynamicPage Footer -->
+
+        </f:DynamicPage>
+    </Page>
+</mvc:View>

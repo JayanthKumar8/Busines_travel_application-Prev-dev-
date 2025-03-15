@@ -1,0 +1,11 @@
+{
+  "xsappname":"travelxsuaa",
+  "tenant-mode": "dedicated",
+  "oauth2-configuration": {
+    "redirect-uris": [
+      "https://**.cfapps.in30.hana.ondemand.com/login/callback*",
+      "https://*.cfapps.in30.hana.ondemand.com/**",
+      "https://port5000-workspaces-ws-cqcvz.in30.applicationstudio.cloud.sap/login/callback"
+    ]
+  }
+}

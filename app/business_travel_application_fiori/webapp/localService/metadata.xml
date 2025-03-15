@@ -1,0 +1,376 @@
+<edmx:Edmx xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:sap="http://www.sap.com/Protocols/SAPData" Version="1.0">
+<edmx:Reference xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Uri="https://sap.github.io/odata-vocabularies/vocabularies/Common.xml">
+<edmx:Include Alias="Common" Namespace="com.sap.vocabularies.Common.v1"/>
+</edmx:Reference>
+<edmx:Reference xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.xml">
+<edmx:Include Alias="Core" Namespace="Org.OData.Core.V1"/>
+</edmx:Reference>
+<edmx:Reference xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Uri="https://sap.github.io/odata-vocabularies/vocabularies/UI.xml">
+<edmx:Include Alias="UI" Namespace="com.sap.vocabularies.UI.v1"/>
+</edmx:Reference>
+<edmx:DataServices m:DataServiceVersion="2.0">
+<Schema xmlns="http://schemas.microsoft.com/ado/2008/09/edm" Namespace="TravelService">
+<Annotation xmlns="http://docs.oasis-open.org/odata/ns/edm" Term="Core.Links">
+<Collection>
+<Record>
+<PropertyValue Property="rel" String="author"/>
+<PropertyValue Property="href" String="https://cap.cloud.sap"/>
+</Record>
+</Collection>
+</Annotation>
+<EntityContainer Name="EntityContainer" m:IsDefaultEntityContainer="true">
+<EntitySet Name="Travel_Requests" EntityType="TravelService.Travel_Requests"/>
+<EntitySet Name="Trip_Items" EntityType="TravelService.Trip_Items"/>
+<EntitySet Name="Attachments" EntityType="TravelService.Attachments"/>
+<EntitySet Name="WorkflowLogs" EntityType="TravelService.WorkflowLogs"/>
+<EntitySet Name="User" EntityType="TravelService.User" sap:label="User" sap:creatable="true" sap:updatable="true" sap:deletable="false"/>
+<FunctionImport Name="getToken" ReturnType="Edm.String" m:HttpMethod="GET"/>
+<FunctionImport Name="getRepositoryInfo" ReturnType="Edm.String" m:HttpMethod="GET"/>
+<FunctionImport Name="createFolder" ReturnType="Edm.String" m:HttpMethod="POST">
+<Parameter Name="folderName" Type="Edm.String" Mode="In" Nullable="true"/>
+</FunctionImport>
+<FunctionImport Name="uploadAttachments" ReturnType="Collection(TravelService.DMSResponse)" m:HttpMethod="POST">
+<Parameter Name="payload" Type="TravelService.ap_TravelService_uploadAttachments_payload" Mode="In" Nullable="true"/>
+</FunctionImport>
+<AssociationSet Name="Trip_Items_travelRequestId" Association="TravelService.Trip_Items_travelRequestId">
+<End Role="Trip_Items" EntitySet="Trip_Items"/>
+<End Role="Travel_Requests" EntitySet="Travel_Requests"/>
+</AssociationSet>
+<AssociationSet Name="Attachments_travelRequestId" Association="TravelService.Attachments_travelRequestId">
+<End Role="Attachments" EntitySet="Attachments"/>
+<End Role="Travel_Requests" EntitySet="Travel_Requests"/>
+</AssociationSet>
+<AssociationSet Name="WorkflowLogs_travelRequestId" Association="TravelService.WorkflowLogs_travelRequestId">
+<End Role="WorkflowLogs" EntitySet="WorkflowLogs"/>
+<End Role="Travel_Requests" EntitySet="Travel_Requests"/>
+</AssociationSet>
+</EntityContainer>
+<EntityType Name="Travel_Requests">
+<Key>
+<PropertyRef Name="travelRequestId"/>
+<PropertyRef Name="empId"/>
+</Key>
+<Property Name="createdAt" Type="Edm.DateTimeOffset" Precision="7"/>
+<Property Name="createdBy" Type="Edm.String" MaxLength="255"/>
+<Property Name="modifiedAt" Type="Edm.DateTimeOffset" Precision="7"/>
+<Property Name="modifiedBy" Type="Edm.String" MaxLength="255"/>
+<Property Name="travelRequestId" Type="Edm.Guid" Nullable="false"/>
+<Property Name="empId" Type="Edm.String" MaxLength="10" Nullable="false"/>
+<Property Name="requestType" Type="Edm.String" MaxLength="255"/>
+<Property Name="status" Type="Edm.String" MaxLength="255"/>
+<Property Name="totalPerDeim" Type="Edm.Int32" sap:ui-readOnly="true"/>
+<Property Name="Remarks" Type="Edm.String" MaxLength="255"/>
+</EntityType>
+<EntityType Name="Trip_Items">
+<Key>
+<PropertyRef Name="tripId"/>
+</Key>
+<Property Name="createdAt" Type="Edm.DateTimeOffset" Precision="7"/>
+<Property Name="createdBy" Type="Edm.String" MaxLength="255"/>
+<Property Name="modifiedAt" Type="Edm.DateTimeOffset" Precision="7"/>
+<Property Name="modifiedBy" Type="Edm.String" MaxLength="255"/>
+<Property Name="tripId" Type="Edm.Guid" Nullable="false"/>
+<NavigationProperty Name="travelRequestId" Relationship="TravelService.Trip_Items_travelRequestId" FromRole="Trip_Items" ToRole="Travel_Requests"/>
+<Property Name="travelRequestId_travelRequestId" Type="Edm.Guid"/>
+<Property Name="travelRequestId_empId" Type="Edm.String" MaxLength="10"/>
+<Property Name="fromDate" Type="Edm.DateTime" sap:display-format="Date"/>
+<Property Name="visaRequired" Type="Edm.Boolean"/>
+<Property Name="flightRequired" Type="Edm.Boolean"/>
+<Property Name="fromCountry" Type="Edm.String" MaxLength="255"/>
+<Property Name="fromCity" Type="Edm.String" MaxLength="255"/>
+<Property Name="toDate" Type="Edm.DateTime" sap:display-format="Date"/>
+<Property Name="toCountry" Type="Edm.String" MaxLength="255"/>
+<Property Name="toCity" Type="Edm.String" MaxLength="255"/>
+<Property Name="PerDeim" Type="Edm.Int32"/>
+<Property Name="remarks" Type="Edm.String" MaxLength="255"/>
+</EntityType>
+<EntityType Name="Attachments" m:HasStream="true">
+<Key>
+<PropertyRef Name="ID"/>
+</Key>
+<Property Name="ID" Type="Edm.Guid" Nullable="false"/>
+<Property Name="createdAt" Type="Edm.DateTimeOffset" Precision="7"/>
+<Property Name="createdBy" Type="Edm.String" MaxLength="255"/>
+<Property Name="modifiedAt" Type="Edm.DateTimeOffset" Precision="7"/>
+<Property Name="modifiedBy" Type="Edm.String" MaxLength="255"/>
+<NavigationProperty Name="travelRequestId" Relationship="TravelService.Attachments_travelRequestId" FromRole="Attachments" ToRole="Travel_Requests"/>
+<Property Name="travelRequestId_travelRequestId" Type="Edm.Guid"/>
+<Property Name="travelRequestId_empId" Type="Edm.String" MaxLength="10"/>
+<Property Name="fileName" Type="Edm.String"/>
+<Property Name="size" Type="Edm.Int32"/>
+<Property Name="mediaType" Type="Edm.String"/>
+<Property Name="url" Type="Edm.String"/>
+</EntityType>
+<EntityType Name="WorkflowLogs">
+<Key>
+<PropertyRef Name="logId"/>
+</Key>
+<Property Name="logId" Type="Edm.Guid" Nullable="false"/>
+<NavigationProperty Name="travelRequestId" Relationship="TravelService.WorkflowLogs_travelRequestId" FromRole="WorkflowLogs" ToRole="Travel_Requests"/>
+<Property Name="travelRequestId_travelRequestId" Type="Edm.Guid"/>
+<Property Name="travelRequestId_empId" Type="Edm.String" MaxLength="10"/>
+<Property Name="step" Type="Edm.String" MaxLength="50"/>
+<Property Name="status" Type="Edm.String" MaxLength="20"/>
+<Property Name="approver" Type="Edm.String" MaxLength="100"/>
+<Property Name="actionDate" Type="Edm.DateTimeOffset" Precision="7"/>
+<Property Name="comments" Type="Edm.String" MaxLength="255"/>
+</EntityType>
+<EntityType Name="User" sap:label="User" sap:upsertable="true">
+<Key>
+<PropertyRef Name="userId"/>
+</Key>
+<Property Name="empId" Type="Edm.String" MaxLength="255" sap:required="false" sap:creatable="true" sap:updatable="true" sap:upsertable="true" sap:visible="true" sap:sortable="false" sap:filterable="false" sap:field-control="userPermissionsNav/empId" sap:label="Employee Id"/>
+<Property Name="username" Type="Edm.String" MaxLength="100" sap:required="false" sap:creatable="true" sap:updatable="true" sap:upsertable="true" sap:visible="true" sap:sortable="true" sap:filterable="true" sap:field-control="userPermissionsNav/username" sap:label="Username"/>
+<Property Name="lastName" Type="Edm.String" MaxLength="128" sap:required="false" sap:creatable="true" sap:updatable="true" sap:upsertable="true" sap:visible="true" sap:sortable="true" sap:filterable="true" sap:field-control="userPermissionsNav/lastName" sap:label="Last Name"/>
+<Property Name="jobTitle" Type="Edm.String" sap:required="false" sap:creatable="true" sap:updatable="true" sap:upsertable="true" sap:visible="true" sap:sortable="false" sap:filterable="false" sap:field-control="userPermissionsNav/jobTitle" sap:label="Title"/>
+<Property Name="department" Type="Edm.String" MaxLength="128" sap:required="false" sap:creatable="true" sap:updatable="true" sap:upsertable="true" sap:visible="true" sap:sortable="true" sap:filterable="true" sap:field-control="userPermissionsNav/department" sap:label="Department"/>
+<Property Name="division" Type="Edm.String" MaxLength="128" sap:required="false" sap:creatable="true" sap:updatable="true" sap:upsertable="true" sap:visible="true" sap:sortable="true" sap:filterable="true" sap:field-control="userPermissionsNav/division" sap:label="Division"/>
+<Property Name="email" Type="Edm.String" MaxLength="100" sap:required="false" sap:creatable="true" sap:updatable="true" sap:upsertable="true" sap:visible="true" sap:sortable="false" sap:filterable="true" sap:field-control="userPermissionsNav/email" sap:label="Email"/>
+<Property Name="title" Type="Edm.String" MaxLength="255" sap:required="false" sap:creatable="true" sap:updatable="true" sap:upsertable="true" sap:visible="true" sap:sortable="false" sap:filterable="false" sap:field-control="userPermissionsNav/title" sap:label="Title"/>
+<Property Name="userId" Type="Edm.String" MaxLength="100" Nullable="false" sap:required="true" sap:creatable="true" sap:updatable="true" sap:upsertable="true" sap:visible="true" sap:sortable="true" sap:filterable="true" sap:field-control="userPermissionsNav/userId" sap:label="User ID"/>
+<Property Name="custom02" Type="Edm.String" MaxLength="255" sap:required="false" sap:creatable="true" sap:updatable="true" sap:upsertable="true" sap:visible="true" sap:sortable="false" sap:filterable="false" sap:field-control="userPermissionsNav/custom02" sap:label="Display Name"/>
+<Property Name="custom03" Type="Edm.String" MaxLength="255" sap:required="false" sap:creatable="true" sap:updatable="true" sap:upsertable="true" sap:visible="true" sap:sortable="false" sap:filterable="false" sap:field-control="userPermissionsNav/custom03" sap:label="CU_Business Unit"/>
+<Property Name="custom04" Type="Edm.String" MaxLength="255" sap:required="false" sap:creatable="true" sap:updatable="true" sap:upsertable="true" sap:visible="true" sap:sortable="false" sap:filterable="false" sap:field-control="userPermissionsNav/custom04" sap:label="CU_EMP_Class"/>
+<Property Name="custom09" Type="Edm.String" MaxLength="255" sap:required="false" sap:creatable="true" sap:updatable="true" sap:upsertable="true" sap:visible="true" sap:sortable="false" sap:filterable="false" sap:field-control="userPermissionsNav/custom09" sap:label="CU_Section"/>
+<Property Name="custom10" Type="Edm.String" MaxLength="255" sap:required="false" sap:creatable="true" sap:updatable="true" sap:upsertable="true" sap:visible="true" sap:sortable="false" sap:filterable="false" sap:field-control="userPermissionsNav/custom10" sap:label="CU_Position"/>
+<Property Name="custom11" Type="Edm.String" MaxLength="255" sap:required="false" sap:creatable="true" sap:updatable="true" sap:upsertable="true" sap:visible="true" sap:sortable="false" sap:filterable="false" sap:field-control="userPermissionsNav/custom11" sap:label="CU_Pay_Grade"/>
+<Property Name="custom14" Type="Edm.String" MaxLength="255" sap:required="false" sap:creatable="true" sap:updatable="true" sap:upsertable="true" sap:visible="true" sap:sortable="false" sap:filterable="false" sap:field-control="userPermissionsNav/custom14" sap:label="CU_Cost_Center"/>
+</EntityType>
+<ComplexType Name="FileInfo">
+<Property Name="fileName" Type="Edm.String"/>
+<Property Name="mediaType" Type="Edm.String"/>
+<Property Name="size" Type="Edm.Int32"/>
+<Property Name="content" Type="Edm.String"/>
+<Property Name="travelRequestId_empId" Type="Edm.String"/>
+</ComplexType>
+<ComplexType Name="DMSResponse">
+<Property Name="fileName" Type="Edm.String"/>
+<Property Name="ObjectId" Type="Edm.String"/>
+<Property Name="status" Type="Edm.String"/>
+<Property Name="error" Type="Edm.String"/>
+</ComplexType>
+<ComplexType Name="ap_TravelService_uploadAttachments_payload">
+<Property Name="files" Type="Collection(TravelService.FileInfo)" Nullable="true"/>
+</ComplexType>
+<Association Name="Trip_Items_travelRequestId">
+<End Role="Trip_Items" Type="TravelService.Trip_Items" Multiplicity="*"/>
+<End Role="Travel_Requests" Type="TravelService.Travel_Requests" Multiplicity="0..1"/>
+<ReferentialConstraint>
+<Principal Role="Travel_Requests">
+<PropertyRef Name="travelRequestId"/>
+<PropertyRef Name="empId"/>
+</Principal>
+<Dependent Role="Trip_Items">
+<PropertyRef Name="travelRequestId_travelRequestId"/>
+<PropertyRef Name="travelRequestId_empId"/>
+</Dependent>
+</ReferentialConstraint>
+</Association>
+<Association Name="Attachments_travelRequestId">
+<End Role="Attachments" Type="TravelService.Attachments" Multiplicity="*"/>
+<End Role="Travel_Requests" Type="TravelService.Travel_Requests" Multiplicity="0..1"/>
+<ReferentialConstraint>
+<Principal Role="Travel_Requests">
+<PropertyRef Name="travelRequestId"/>
+<PropertyRef Name="empId"/>
+</Principal>
+<Dependent Role="Attachments">
+<PropertyRef Name="travelRequestId_travelRequestId"/>
+<PropertyRef Name="travelRequestId_empId"/>
+</Dependent>
+</ReferentialConstraint>
+</Association>
+<Association Name="WorkflowLogs_travelRequestId">
+<End Role="WorkflowLogs" Type="TravelService.WorkflowLogs" Multiplicity="*"/>
+<End Role="Travel_Requests" Type="TravelService.Travel_Requests" Multiplicity="0..1"/>
+<ReferentialConstraint>
+<Principal Role="Travel_Requests">
+<PropertyRef Name="travelRequestId"/>
+<PropertyRef Name="empId"/>
+</Principal>
+<Dependent Role="WorkflowLogs">
+<PropertyRef Name="travelRequestId_travelRequestId"/>
+<PropertyRef Name="travelRequestId_empId"/>
+</Dependent>
+</ReferentialConstraint>
+</Association>
+<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="TravelService.Travel_Requests/createdAt">
+<Annotation Term="UI.HiddenFilter" Bool="true"/>
+<Annotation Term="UI.ExcludeFromNavigationContext" Bool="true"/>
+<Annotation Term="Core.Immutable" Bool="true"/>
+<Annotation Term="Core.Computed" Bool="true"/>
+<Annotation Term="Common.Label" String="Created On"/>
+</Annotations>
+<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="TravelService.Travel_Requests/createdBy">
+<Annotation Term="UI.HiddenFilter" Bool="true"/>
+<Annotation Term="UI.ExcludeFromNavigationContext" Bool="true"/>
+<Annotation Term="Core.Immutable" Bool="true"/>
+<Annotation Term="Core.Computed" Bool="true"/>
+<Annotation Term="Core.Description" String="User's unique ID"/>
+<Annotation Term="Common.Label" String="Created By"/>
+</Annotations>
+<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="TravelService.Travel_Requests/modifiedAt">
+<Annotation Term="UI.HiddenFilter" Bool="true"/>
+<Annotation Term="UI.ExcludeFromNavigationContext" Bool="true"/>
+<Annotation Term="Core.Computed" Bool="true"/>
+<Annotation Term="Common.Label" String="Changed On"/>
+</Annotations>
+<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="TravelService.Travel_Requests/modifiedBy">
+<Annotation Term="UI.HiddenFilter" Bool="true"/>
+<Annotation Term="UI.ExcludeFromNavigationContext" Bool="true"/>
+<Annotation Term="Core.Computed" Bool="true"/>
+<Annotation Term="Core.Description" String="User's unique ID"/>
+<Annotation Term="Common.Label" String="Changed By"/>
+</Annotations>
+<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="TravelService.Travel_Requests/travelRequestId">
+<Annotation Term="Common.Label" String="Travel RequestId"/>
+<Annotation Term="Core.ComputedDefaultValue" Bool="true"/>
+</Annotations>
+<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="TravelService.Travel_Requests/empId">
+<Annotation Term="Common.Label" String="Employee Id"/>
+</Annotations>
+<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="TravelService.Travel_Requests/requestType">
+<Annotation Term="Common.Label" String="Request Type"/>
+</Annotations>
+<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="TravelService.Travel_Requests/status">
+<Annotation Term="Common.Label" String="Status"/>
+</Annotations>
+<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="TravelService.Travel_Requests/totalPerDeim">
+<Annotation Term="Common.Label" String="Total Per Deim"/>
+</Annotations>
+<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="TravelService.Travel_Requests/Remarks">
+<Annotation Term="Common.Label" String="Comments"/>
+</Annotations>
+<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="TravelService.Trip_Items/createdAt">
+<Annotation Term="UI.HiddenFilter" Bool="true"/>
+<Annotation Term="UI.ExcludeFromNavigationContext" Bool="true"/>
+<Annotation Term="Core.Immutable" Bool="true"/>
+<Annotation Term="Core.Computed" Bool="true"/>
+<Annotation Term="Common.Label" String="Created On"/>
+</Annotations>
+<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="TravelService.Trip_Items/createdBy">
+<Annotation Term="UI.HiddenFilter" Bool="true"/>
+<Annotation Term="UI.ExcludeFromNavigationContext" Bool="true"/>
+<Annotation Term="Core.Immutable" Bool="true"/>
+<Annotation Term="Core.Computed" Bool="true"/>
+<Annotation Term="Core.Description" String="User's unique ID"/>
+<Annotation Term="Common.Label" String="Created By"/>
+</Annotations>
+<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="TravelService.Trip_Items/modifiedAt">
+<Annotation Term="UI.HiddenFilter" Bool="true"/>
+<Annotation Term="UI.ExcludeFromNavigationContext" Bool="true"/>
+<Annotation Term="Core.Computed" Bool="true"/>
+<Annotation Term="Common.Label" String="Changed On"/>
+</Annotations>
+<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="TravelService.Trip_Items/modifiedBy">
+<Annotation Term="UI.HiddenFilter" Bool="true"/>
+<Annotation Term="UI.ExcludeFromNavigationContext" Bool="true"/>
+<Annotation Term="Core.Computed" Bool="true"/>
+<Annotation Term="Core.Description" String="User's unique ID"/>
+<Annotation Term="Common.Label" String="Changed By"/>
+</Annotations>
+<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="TravelService.Trip_Items/tripId">
+<Annotation Term="Common.Label" String="Trip Id"/>
+<Annotation Term="Core.ComputedDefaultValue" Bool="true"/>
+</Annotations>
+<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="TravelService.Trip_Items/travelRequestId">
+<Annotation Term="Common.Label" String="Travel RequestId"/>
+</Annotations>
+<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="TravelService.Trip_Items/travelRequestId_travelRequestId">
+<Annotation Term="Common.Label" String="Travel RequestId"/>
+</Annotations>
+<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="TravelService.Trip_Items/travelRequestId_empId">
+<Annotation Term="Common.Label" String="Travel RequestId"/>
+</Annotations>
+<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="TravelService.Trip_Items/fromDate">
+<Annotation Term="Common.Label" String="From Date"/>
+</Annotations>
+<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="TravelService.Trip_Items/visaRequired">
+<Annotation Term="Common.Label" String="Visa Required"/>
+</Annotations>
+<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="TravelService.Trip_Items/flightRequired">
+<Annotation Term="Common.Label" String="Flight Required"/>
+</Annotations>
+<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="TravelService.Trip_Items/fromCountry">
+<Annotation Term="Common.Label" String="From Country"/>
+</Annotations>
+<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="TravelService.Trip_Items/fromCity">
+<Annotation Term="Common.Label" String="From City"/>
+</Annotations>
+<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="TravelService.Trip_Items/toDate">
+<Annotation Term="Common.Label" String="To Date"/>
+</Annotations>
+<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="TravelService.Trip_Items/toCountry">
+<Annotation Term="Common.Label" String="To Country"/>
+</Annotations>
+<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="TravelService.Trip_Items/toCity">
+<Annotation Term="Common.Label" String="To City"/>
+</Annotations>
+<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="TravelService.Trip_Items/PerDeim">
+<Annotation Term="Common.Label" String="PerDeim"/>
+</Annotations>
+<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="TravelService.Trip_Items/remarks">
+<Annotation Term="Common.Label" String="Remarks"/>
+</Annotations>
+<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="TravelService.Attachments">
+<Annotation Term="Core.MediaType" Path="mediaType"/>
+</Annotations>
+<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="TravelService.Attachments/ID">
+<Annotation Term="Core.ComputedDefaultValue" Bool="true"/>
+</Annotations>
+<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="TravelService.Attachments/createdAt">
+<Annotation Term="UI.HiddenFilter" Bool="true"/>
+<Annotation Term="UI.ExcludeFromNavigationContext" Bool="true"/>
+<Annotation Term="Core.Immutable" Bool="true"/>
+<Annotation Term="Core.Computed" Bool="true"/>
+<Annotation Term="Common.Label" String="Created On"/>
+</Annotations>
+<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="TravelService.Attachments/createdBy">
+<Annotation Term="UI.HiddenFilter" Bool="true"/>
+<Annotation Term="UI.ExcludeFromNavigationContext" Bool="true"/>
+<Annotation Term="Core.Immutable" Bool="true"/>
+<Annotation Term="Core.Computed" Bool="true"/>
+<Annotation Term="Core.Description" String="User's unique ID"/>
+<Annotation Term="Common.Label" String="Created By"/>
+</Annotations>
+<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="TravelService.Attachments/modifiedAt">
+<Annotation Term="UI.HiddenFilter" Bool="true"/>
+<Annotation Term="UI.ExcludeFromNavigationContext" Bool="true"/>
+<Annotation Term="Core.Computed" Bool="true"/>
+<Annotation Term="Common.Label" String="Changed On"/>
+</Annotations>
+<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="TravelService.Attachments/modifiedBy">
+<Annotation Term="UI.HiddenFilter" Bool="true"/>
+<Annotation Term="UI.ExcludeFromNavigationContext" Bool="true"/>
+<Annotation Term="Core.Computed" Bool="true"/>
+<Annotation Term="Core.Description" String="User's unique ID"/>
+<Annotation Term="Common.Label" String="Changed By"/>
+</Annotations>
+<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="TravelService.Attachments/travelRequestId">
+<Annotation Term="Common.Label" String="travelRequestId"/>
+</Annotations>
+<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="TravelService.Attachments/travelRequestId_travelRequestId">
+<Annotation Term="Common.Label" String="travelRequestId"/>
+</Annotations>
+<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="TravelService.Attachments/travelRequestId_empId">
+<Annotation Term="Common.Label" String="travelRequestId"/>
+</Annotations>
+<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="TravelService.Attachments/fileName">
+<Annotation Term="Common.Label" String="Attachment Name"/>
+</Annotations>
+<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="TravelService.Attachments/size">
+<Annotation Term="Common.Label" String="Attachment Type"/>
+</Annotations>
+<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="TravelService.Attachments/mediaType">
+<Annotation Term="Core.IsMediaType" Bool="true"/>
+<Annotation Term="Common.Label" String="Attachment Type"/>
+</Annotations>
+<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="TravelService.Attachments/url">
+<Annotation Term="Common.Label" String="Attachment Url"/>
+</Annotations>
+<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="TravelService.WorkflowLogs/logId">
+<Annotation Term="Core.ComputedDefaultValue" Bool="true"/>
+</Annotations>
+</Schema>
+</edmx:DataServices>
+</edmx:Edmx>

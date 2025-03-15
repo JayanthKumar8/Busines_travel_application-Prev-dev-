@@ -1,0 +1,170 @@
+{
+  "_version": "1.65.0",
+  "sap.app": {
+    "id": "travelapp.businesstravelapplicationfiori",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "1.0.0"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:basic",
+      "version": "1.16.1",
+      "toolsId": "b313f4ac-df17-4f23-b905-ea59e58a3380"
+    },
+    "dataSources": {
+      "mainService": {
+        "uri": "/odata/v2/travel/",
+        "type": "OData",
+        "settings": {
+          "localUri": "localService/metadata.xml",
+          "odataVersion": "2.0"
+        }
+      },
+      "CountriesJSONData": {
+        "uri": "model/CountriesCollection.json",
+        "type": "JSON"
+      },
+      "documentDataSource": {
+        "uri": "model/documents.json",
+        "type": "JSON"
+      }
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "business_travel_application_fiori-display": {
+          "semanticObject": "Business_Travel_Application",
+          "action": "display",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
+        }
+      }
+    }
+  },
+  "sap.cloud": {
+    "service": "Business_Travel_Application",
+    "public": true
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "componentName": "travelapp.businesstravelapplicationfiori",
+    "flexEnabled": true,
+    "dependencies": {
+      "minUI5Version": "1.131.1",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "travelapp.businesstravelapplicationfiori.i18n.i18n"
+        }
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "useBatch": true,
+          "defaultBindingMode": "TwoWay",
+          "earlyRequests": true
+        }
+      },
+      "CountriesJSONModel": {
+        "type": "sap.ui.model.json.JSONModel",
+        "dataSource": "CountriesJSONData"
+      }
+    },
+    "resources": {
+      "js": [
+        {
+          "uri": "Component.js"
+        }
+      ],
+      "css": [
+        {
+          "uri": "css/style.css"
+        }
+      ]
+    },
+    "routing": {
+      "config": {
+        "routerClass": "sap.m.routing.Router",
+        "controlAggregation": "pages",
+        "controlId": "app",
+        "transition": "slide",
+        "type": "View",
+        "viewType": "XML",
+        "path": "travelapp.businesstravelapplicationfiori.view"
+      },
+      "routes": [
+        {
+          "name": "Routedashboard",
+          "pattern": ":?query:",
+          "target": [
+            "Targetdashboard"
+          ]
+        },
+        {
+          "name": "RouteToCreateRequestPage",
+          "pattern": "create_request",
+          "target": [
+            "Targetcreate_request"
+          ]
+        },
+        {
+          "name": "RouteTotravelrequest",
+          "pattern": "travelrequest/{userId}",
+          "target": [
+            "Targettravelrequest"
+          ]
+        }
+      ],
+      "targets": {
+        "Targetdashboard": {
+          "id": "dashboard",
+          "name": "dashboard"
+        },
+        "Targettravelrequest": {
+          "viewType": "XML",
+          "transition": "slide",
+          "id": "travelrequest",
+          "name": "travelrequest"
+        }
+      }
+    },
+    "rootView": {
+      "viewName": "travelapp.businesstravelapplicationfiori.view.App",
+      "type": "XML",
+      "id": "App"
+    }
+  }
+}

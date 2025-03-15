@@ -1,0 +1,94 @@
+{
+  "name": "Busines_travel_application",
+  "version": "1.0.0",
+  "description": "A simple CAP project.",
+  "repository": "<Add your repository here>",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "@cap-js-community/odata-v2-adapter": "^1.14.0",
+    "@cap-js/hana": "^1",
+    "@cap-js/sdm": "^1.2.2",
+    "@sap-cloud-sdk/connectivity": "^3.25.0",
+    "@sap-cloud-sdk/http-client": "^3.25.0",
+    "@sap-cloud-sdk/resilience": "^3.25.0",
+    "@sap/approuter": "^19.0.0",
+    "@sap/cds": "^8",
+    "@sap/hdi-deploy": "^5.3.2",
+    "@sap/html5-app-deployer": "^7.0.0",
+    "@sap/xsenv": "^5.5.0",
+    "@sap/xssec": "^4",
+    "axios": "^1.7.9",
+    "cmis": "^1.0.3",
+    "cors": "^2.8.5",
+    "express": "^4",
+    "node-fetch": "^3.3.2",
+    "socket.io": "^4.8.1"
+  },
+  "engines": {
+    "node": "20.18.0"
+  },
+  "scripts": {
+    "dev": "npm run dev -w=approuter",
+    "start": "cds-serve",
+    "hana-deploy": "cds deploy --to hana:Business_travel_hdi_instance_Hana",
+    "watch-business_travel_application_fiori": "cds watch --open business_travel_application_fiori/webapp/index.html?sap-ui-xx-viewCache=false",
+    "undeploy": "cf undeploy Busines_travel_application --delete-services --delete-service-keys --delete-service-brokers",
+    "build": "rimraf resources mta_archives && mbt build --mtar archive",
+    "deploy": "cf deploy mta_archives/archive.mtar --retries 1",
+    "watch-travel_request_approval": "cds watch --open travel_request_approval/webapp/index.html?sap-ui-xx-viewCache=false"
+  },
+  "cds": {
+    "build": {
+      "tasks": [
+        {
+          "for": "hana",
+          "dest": "./db"
+        },
+        {
+          "for": "node-cf"
+        }
+      ]
+    },
+    "requires": {
+      "auth": "xsuaa",
+      "db": "hana",
+      "cors": {
+        "enabled": true
+      },
+      "DEST_SF_DATA": {
+        "kind": "odata-v2",
+        "model": "srv/external/DEST_SF_DATA",
+        "credentials": {
+          "destination": "destination_SFSF_old",
+          "path": "/odata/v2/User"
+        }
+      },
+      "DEST_DMS": {
+        "kind": "rest",
+        "credentials": {
+          "destination": "DEST_BTP_DMS_AUTO",
+          "requestTimeout": 10000
+        }
+      },
+      "[production]": {
+        "db": {
+          "kind": "hana"
+        },
+        "auth": "xsuaa"
+      },
+      "destinations": true,
+      "html5-repo": true,
+      "workzone": true
+    },
+    "sql": {
+      "native_hana_associations": false
+    }
+  },
+  "sapux": [
+    "app/business_travel_application_fiori"
+  ],
+  "devDependencies": {
+    "@sap/cds-dk": "^8"
+  }
+}

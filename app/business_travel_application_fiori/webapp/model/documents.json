@@ -1,0 +1,19 @@
+{
+	"items": [
+		{
+			"id": "23004569",
+			"fileName": "Invoice summary.doc",
+			"mediaType": "application/msword",
+			"imageUrl": "",
+			"url": "",
+			"revision": "01",
+			"status": "In work",
+			"fileSize": 200,
+			"lastModifiedBy": "Jane Burns",
+			"lastmodified": "10/03/21, 10:03:00 PM",
+			"documentType": "Invoice",
+			"previewable": true
+		}
+		
+	]
+}
